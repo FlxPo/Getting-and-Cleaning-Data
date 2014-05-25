@@ -32,9 +32,9 @@ colnames(yMergedLabelled) = "activity"
 #Subsetting "X" dataset to columns containing mean and std information
 nameMatch = grep("mean|std", features[,2], value = T)
 nameMatch = grep("meanfreq", nameMatch, value = T, invert = T, ignore.case = T)
-nameMatch = gsub("\\(\\)", "", nameMatch)
-nameMatch = gsub("\\-", ".", nameMatch)
 XMeanStd = XMerged[,nameMatch]
+colnames(XMeanStd) = gsub("\\(\\)", "", colnames(XMeanStd))
+colnames(XMeanStd) = gsub("\\-", ".", colnames(XMeanStd))
 
 #Merging "Subject", "X" and "y" datasets
 finalDataset = cbind(subjectMerged, yMergedLabelled, XMeanStd)
