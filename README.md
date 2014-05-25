@@ -9,11 +9,15 @@ This first part of the script loads the explanatory variables (noted x), the cor
 
 <pre><code>
 dir = getwd()
+
 XTest = read.table(file.path(dir, "UCI HAR Dataset/test/X_test.txt"))
 yTest = read.table(file.path(dir, "UCI HAR Dataset/test/y_test.txt"))
+
 subjectTest = read.table(file.path(dir, "UCI HAR Dataset/test/subject_test.txt"))
+
 XTrain = read.table(file.path(dir, "UCI HAR Dataset/train/X_train.txt"))
 yTrain = read.table(file.path(dir, "UCI HAR Dataset/train/y_train.txt"))
+
 subjectTrain = read.table(file.path(dir, "UCI HAR Dataset/train/subject_train.txt"))
 </pre></code>
 
@@ -27,21 +31,22 @@ subjectMerged = rbind(subjectTrain, subjectTest)
 </pre></code>
 
 ##Labelling columns 
-All variables in the dataset are then explicitly named :
+All variables in the dataset are then explicitly named, and activity ids are replaced by their corresponding explicit names :
 
 <pre><code>
 colnames(yMerged) = "activity"
 colnames(subjectMerged) = "subject"
+
 features = read.table(file.path(dir, "UCI HAR Dataset/features.txt"))
 colnames(XMerged) = features[,2]
-</pre></code>
-
-##Transforming activities ids to activities names (1 -> WALKING)
 activityLabels = read.table(file.path(dir, "UCI HAR Dataset/activity_labels.txt"))
+
 yMergedLabelled = factor(as.numeric(yMerged[,1]))
 levels(yMergedLabelled) = activityLabels[,2]
+
 yMergedLabelled = as.data.frame(yMergedLabelled)
 colnames(yMergedLabelled) = "activity"
+</pre></code>
 
 ##Mean and Standard Deviation selection
 We prepare the selection of mean and standard deviation explanatory variables by filtering the features vector using a regex. We also change the names to avoid problems when manipulating variable names (ie "()" or "-" characters).
@@ -49,8 +54,10 @@ We prepare the selection of mean and standard deviation explanatory variables by
 <pre><code>
 nameMatch = grep("mean|std", features[,2], value = T)
 nameMatch = grep("meanfreq", nameMatch, value = T, invert = T, ignore.case = T)
+
 nameMatch = gsub("\\(\\)", "", nameMatch)
 nameMatch = gsub("\\-", ".", nameMatch)
+
 XMeanStd = XMerged[,nameMatch]
 </pre></code>
 
